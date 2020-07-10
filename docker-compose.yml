@@ -1,0 +1,30 @@
+version: '2'
+
+networks:
+  minionet:
+    driver: bridge
+
+services:
+  minio:
+    image: 'dimaskiddo/alpine:minio-1.0'
+    working_dir: /data/minio
+    env_file: ./env/minio.env
+    networks:
+      - minionet
+    volumes:
+      - ./data/minio:/data/minio
+    restart: unless-stopped
+
+  nginx:
+    image: 'dimaskiddo/alpine:nginx-1.12.2-novol'
+    networks:
+      - minionet
+    ports:
+      - 80:8080
+      - 443:8443
+    volumes:
+      - ./data/nginx/certs:/etc/nginx/certs
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
+    restart: unless-stopped
+    depends_on:
+      - minio
