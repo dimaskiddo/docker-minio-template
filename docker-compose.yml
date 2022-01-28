@@ -6,7 +6,7 @@ networks:
 
 services:
   minio:
-    image: 'dimaskiddo/alpine:minio-1.0'
+    image: 'dimaskiddo/debian-buster:minio-1.0'
     working_dir: /data/minio
     env_file: ./env/minio.env
     networks:
@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: 'dimaskiddo/alpine:nginx-1.12.2-novol'
+    image: 'dimaskiddo/debian-buster:nginx-1.14-novol'
     networks:
       - minionet
     ports:
@@ -24,7 +24,7 @@ services:
       - 443:8443
     volumes:
       - ./data/nginx/certs:/etc/nginx/certs
-      - ./data/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/sites-available:/etc/nginx/sites-available
     restart: unless-stopped
     depends_on:
       - minio
